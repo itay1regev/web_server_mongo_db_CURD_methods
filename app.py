@@ -76,6 +76,7 @@ CORS(app)
 data_samples = mongo.db.data_samples
 
 
+
 @app.route('/')
 def index():
     """
@@ -129,9 +130,11 @@ def get_data():
     :return: The data from the DB in a sorted DataFrame instance. (by DateTime instance)
     """
     df = pd.DataFrame(list(data_samples.find()))
-    df['date_time'] = df['time_stamp'].apply(
-        lambda time_stamp: datetime.datetime.fromtimestamp(int(time_stamp)).isoformat())
-    df = df.sort_values(by=['date_time'], ascending=False)
+    if len(df) > 0:
+        df['date_time'] = df['time_stamp'].apply(
+            lambda time_stamp: datetime.datetime.fromtimestamp(int(time_stamp)).isoformat())
+        df = df.sort_values(by=['date_time'], ascending=False)
+        return df
     return df
 
 
